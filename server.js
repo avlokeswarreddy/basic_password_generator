@@ -1,11 +1,13 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const dbPath = path.join(__dirname, 'password_manager.db');
+const dbPath = path.join(__dirname, 'password_manager.sql');
+const schemaPath = path.join(__dirname, 'schema.sql');
 
 const db = new sqlite3.Database(dbPath);
 
@@ -15,29 +17,29 @@ function hashPassword(password) {
 
 function ensureTables() {
   return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      db.run(`
+    const schemaSql = fs.existsSync(schemaPath)
+      ? fs.readFileSync(schemaPath, 'utf8')
+      : `
         CREATE TABLE IF NOT EXISTS settings (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           key TEXT UNIQUE NOT NULL,
           value TEXT NOT NULL
-        )
-      `, (err) => {
-        if (err) return reject(err);
+        );
 
-        db.run(`
-          CREATE TABLE IF NOT EXISTS entries (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            website TEXT NOT NULL,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL,
-            note TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-          )
-        `, (tableErr) => {
-          if (tableErr) return reject(tableErr);
-          resolve();
-        });
+        CREATE TABLE IF NOT EXISTS entries (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          website TEXT NOT NULL,
+          username TEXT NOT NULL,
+          password TEXT NOT NULL,
+          note TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `;
+
+    db.serialize(() => {
+      db.exec(schemaSql, (err) => {
+        if (err) return reject(err);
+        resolve();
       });
     });
   });
