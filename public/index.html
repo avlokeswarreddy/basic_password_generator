@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div id="setupScreen" class="screen active">
+        <div class="card auth-card">
+          <h1>Create Master Password</h1>
+          <p>Set your master password to protect your vault.</p>
+          <form id="setupForm" class="auth-form">
+            <label>
+              Master password
+              <input id="setupPassword" type="password" placeholder="At least 4 characters" required />
+            </label>
+            <label>
+              Confirm password
+              <input id="setupConfirmPassword" type="password" placeholder="Retype password" required />
+            </label>
+            <button type="submit">Create Vault</button>
+          </form>
+          <p id="setupMessage" class="message" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div id="unlockScreen" class="screen hidden">
+        <div class="card auth-card">
+          <h1>Unlock Your Vault</h1>
+          <p>Enter your master password to access your saved credentials.</p>
+          <form id="unlockForm" class="auth-form">
+            <label>
+              Master password
+              <input id="unlockPassword" type="password" placeholder="Enter your password" required />
+            </label>
+            <button type="submit">Unlock</button>
+          </form>
+          <button id="forgotPasswordBtn" class="link-button" type="button">Forgot password?</button>
+          <p id="unlockMessage" class="message" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div id="vaultScreen" class="screen hidden">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Secure Vault</p>
+            <h2>Your Passwords</h2>
+          </div>
+          <button id="logoutBtn" class="secondary-btn" type="button">Lock Vault</button>
+        </header>
+
+        <div class="workspace">
+          <section class="card list-card">
+            <div class="search-row">
+              <input id="searchInput" type="search" placeholder="Search by website or username" />
+              <span id="resultCount" class="result-count">0 items</span>
+            </div>
+            <div id="passwordList" class="password-list" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <button id="addPasswordBtn" class="floating-add-btn" type="button" aria-label="Add password" title="Add password">+</button>
+
+        <div id="entryModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+          <div class="modal-card">
+            <div class="modal-header">
+              <h3 id="formTitle">Add Password</h3>
+              <button id="closeModalBtn" class="modal-close-btn" type="button" aria-label="Close">&times;</button>
+            </div>
+            <form id="entryForm">
+              <div class="field-grid">
+                <label>
+                  Website name
+                  <input id="websiteInput" type="text" placeholder="Example: Gmail" required />
+                </label>
+                <label>
+                  Username
+                  <input id="usernameInput" type="text" placeholder="yourname@example.com" required />
+                </label>
+                <label>
+                  Password
+                  <input id="passwordInput" type="text" placeholder="Enter password" required />
+                </label>
+              </div>
+              <label>
+                Note (optional)
+                <textarea id="noteInput" rows="3" placeholder="Add notes about this account"></textarea>
+              </label>
+              <div class="form-actions">
+                <button id="saveBtn" type="submit">Save Password</button>
+                <button id="cancelEditBtn" class="secondary-btn" type="button">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
